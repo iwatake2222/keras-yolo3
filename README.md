@@ -97,3 +97,29 @@ If you want to use original pretrained weights for YOLOv3:
 6. The training strategy is for reference only. Adjust it according to your dataset and your goal. And add further strategy if needed.
 
 7. For speeding up the training process with frozen layers train_bottleneck.py can be used. It will compute the bottleneck features of the frozen model first and then only trains the last layers. This makes training on CPU possible in a reasonable time. See [this](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html) for more information on bottleneck features.
+
+
+# Modification for Edge TPU
+- use ReLU instead of LeakyReLU
+- how to convert
+
+```sh
+wget https://pjreddie.com/media/files/yolov3-tiny.weights
+python convert.py yolov3-tiny.cfg yolov3-tiny.weights model_data/yolo-tiny.h5
+
+tflite_convert ^
+  --output_file=model_data/yolo-tiny.tflite ^
+  --keras_model_file=model_data/yolo-tiny.h5 ^
+  --inference_type=QUANTIZED_UINT8 ^
+  --input_arrays=input_1 ^
+  --input_shapes=1,256,256,3 ^
+  --default_ranges_min=0 ^
+  --default_ranges_max=6 ^
+  --mean_values=128 ^
+  --std_dev_values=127
+
+then, compile using Edge TPU Compiler
+```
+
+
+

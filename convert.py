@@ -15,6 +15,7 @@ from keras import backend as K
 from keras.layers import (Conv2D, Input, ZeroPadding2D, Add,
                           UpSampling2D, MaxPooling2D, Concatenate)
 from keras.layers.advanced_activations import LeakyReLU
+from keras.layers.advanced_activations import ReLU
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras.regularizers import l2
@@ -182,7 +183,7 @@ def _main(args):
             if activation == 'linear':
                 all_layers.append(prev_layer)
             elif activation == 'leaky':
-                act_layer = LeakyReLU(alpha=0.1)(prev_layer)
+                act_layer = ReLU()(prev_layer)
                 prev_layer = act_layer
                 all_layers.append(act_layer)
 
